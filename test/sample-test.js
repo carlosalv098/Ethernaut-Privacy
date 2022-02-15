@@ -11,8 +11,15 @@ describe("Privacy", function () {
     ]
     const [Privacy, privacy] = await deploy('Privacy', data);
 
-    expect(await privacy.locked()).to.equal(true);
+    expect(await privacy.locked()).to.be.true;
+
+    // get storage in all the slots
     const bytes_storage = await getStorage(privacy, [0,1,2,3,4,5]);
+
+    const [Attack, attack] = await deploy('Attack');
+    await attack.unlock(privacy.address, bytes_storage[5]);
+
+    expect(await privacy.locked()).to.be.false;
   
   });
 });
